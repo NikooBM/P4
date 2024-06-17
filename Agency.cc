@@ -16,11 +16,33 @@ ifstream fihcerobinLec;
 fihcerobinLec.open(filename,ios::in|ios::binary);
 if(!fihcerobinLec.is_open()){
     Util::error(ERR_FILE);
+    throw EXCEPTION_FILE;
 }
 
 BinAgency agency;
-
+BinInfluencer inf;
+BinSNFollowers fol;
 fihcerobinLec.read((char*)&agency,sizeof(BinAgency));
+
+this->name=agency.name;
+this->money=agency.money;
+
+for(unsigned int i=0;i<agency.numInfluencers;i++){
+    Influencer (*inf);
+
+    fihcerobinLec.read((char*)&inf,sizeof(BinInfluencer));
+    
+    influencers.push_back(*inf);
+
+    unsigned int infTAM=(unsigned int)inf->getFollowers().size();
+    
+    for(unsigned int j=0;j<infTAM;j++){
+        SNFollowers (*fol);
+        influencers[i].addFollowers(*fol);
+        fihcerobinLec.read((char*)&fol,sizeof(BinSNFollowers));
+        influencers[i].getFollowers().push_back(*fol);
+ }
+}
 fihcerobinLec.close();
 }
 
@@ -42,11 +64,21 @@ BinAgency Agency::toBinAgency() const{
 
 void Agency::saveData(string filename) const{
     ofstream file;
-    file.open(filename);
+    file.open(filename,ios::out|ios::binary);
     if(!file.is_open()){
         Util::error(ERR_FILE);
     }
 
+    BinAgency ba=toBinAgency();
+    file.write((char*)&ba,sizeof(BinAgency));
+    for(int i=0;i<influencers.size();i++){
+        BinInfluencer bi=influencers[i].toBinInfluencer();
+        file.write((char*)&bi,sizeof(BinInfluencer));
+        for(int j=0;j<influencers[i].getFollowers().size();j++){
+            BinSNFollowers bsf=influencers[i].getFollowers()[j].toBinSNFollowers();
+            file.write((char*)&bsf,sizeof(BinSNFollowers));
+        }
+    }
     
     file.close();
 }

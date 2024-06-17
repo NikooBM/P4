@@ -68,14 +68,13 @@ void SNData::newSocialNetwork(string name,double avgR,double avgM){
    Y guardar en sns los datos leidos
  */
 
-void readline(int linenum,string line){
+void readline(string line){
 
     if(line.length()==0){
-        linenum++;
+        return;
     }
 
     else if(line[0]==':'){
-        linenum++;
         throw invalid_argument(line);
     }
 
@@ -83,12 +82,11 @@ void readline(int linenum,string line){
 for(unsigned int i=0;i<line.length();i++){
     if(line[i]==':'){
         string name=line.substr(0,i);
-        for(unsigned int j=i;j<line.length();j++){
+        for(unsigned int j=i+1;j<line.length();j++){
             if(line[j]==':'){
                 string avgR=line.substr(i+1,j-i);
-                for(unsigned int k=j;k<line.length();k++){
+                for(unsigned int k=j+1;k<line.length();k++){
                     if(line[k]==':'){
-                        linenum++;
                         throw invalid_argument(line);
                     }
                         string avgM=line.substr(j+1,line.length());
@@ -96,13 +94,13 @@ for(unsigned int i=0;i<line.length();i++){
                         float avgMonetizing=stof(avgM);
 
                         SNData::newSocialNetwork(name,avgRating,avgMonetizing);
-                        linenum++;
                         return;
                 }
             }
         }
     }
 }
+throw invalid_argument(line);
     }
 }
 
@@ -114,9 +112,10 @@ void SNData::readFromCSV(string filename){
         string line;
         while(getline(ficheroLec,line)){
             try{
-                readline(linenum,line);
+                linenum++;
+                readline(line);
             }catch(invalid_argument& e){
-                cout<<"Error line: "<<e.what()<<endl;
+                cout<<"Error line "<<linenum<<endl;
             }
         }
         ficheroLec.close();
