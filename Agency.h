@@ -25,7 +25,7 @@ private:
     vector <Influencer> influencers;
 public:
     Agency(string filename);
-    unsigned int getNumberInfluencers() const { return influencers.size();};
+    unsigned int getNumberInfluencers() const { return (unsigned int)influencers.size();};
     BinAgency toBinAgency() const;
     void saveData(string filename) const;
     Agency(string name,double initialMoney);

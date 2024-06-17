@@ -70,7 +70,7 @@ void SNData::newSocialNetwork(string name,double avgR,double avgM){
 
 void readline(int linenum,string line){
 
-    if(line.size()==0){
+    if(line.length()==0){
         linenum++;
     }
 
@@ -80,18 +80,18 @@ void readline(int linenum,string line){
     }
 
     else{
-for(unsigned int i=0;i<line.size();i++){
+for(unsigned int i=0;i<line.length();i++){
     if(line[i]==':'){
         string name=line.substr(0,i);
-        for(unsigned int j=i;j<line.size();j++){
+        for(unsigned int j=i;j<line.length();j++){
             if(line[j]==':'){
                 string avgR=line.substr(i+1,j-i);
-                for(unsigned int k=j;k<line.size();k++){
+                for(unsigned int k=j;k<line.length();k++){
                     if(line[k]==':'){
                         linenum++;
                         throw invalid_argument(line);
                     }
-                        string avgM=line.substr(j+1,k-j);
+                        string avgM=line.substr(j+1,line.length());
                         float avgRating=stof(avgR);
                         float avgMonetizing=stof(avgM);
 

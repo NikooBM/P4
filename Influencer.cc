@@ -14,12 +14,11 @@ using namespace std;
 Influencer::Influencer(const BinInfluencer &bI){
     this->name=bI.name;
     this->commission=bI.commission;
-    this->followers.empty();
+    this->followers.erase(followers.begin(),followers.end());
 }
 
 void Influencer::addFollowers(const SNFollowers &follower){
     SNFollowers newFollower(follower);
-
     followers.push_back(newFollower);
 }
 
@@ -34,7 +33,7 @@ BinInfluencer Influencer::toBinInfluencer() const{
         strcpy(newInfluencer.name,name.c_str());
     }
     newInfluencer.commission=commission;
-    newInfluencer.numFollowers=followers.size();
+    newInfluencer.numFollowers=(int)followers.size();
 
     return newInfluencer;
 }

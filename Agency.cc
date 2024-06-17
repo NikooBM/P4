@@ -36,7 +36,7 @@ BinAgency Agency::toBinAgency() const{
     }
 
     ba.money=money;
-    this->influencers.empty();
+    ba.numInfluencers=(int)influencers.size();
     return ba;
 }
 
