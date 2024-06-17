@@ -1,5 +1,6 @@
 // DNI 78008606N BIBILEISHVILI MAMALADZE, NIKOLOZ
 #include "SNData.h"
+#include "Influencer.h"
 #include "Agency.h"
 #include "Util.h"
 
@@ -20,27 +21,29 @@ if(!fihcerobinLec.is_open()){
 }
 
 BinAgency agency;
-BinInfluencer inf;
+
 BinSNFollowers fol;
 fihcerobinLec.read((char*)&agency,sizeof(BinAgency));
 
 this->name=agency.name;
 this->money=agency.money;
 
-for(unsigned int i=0;i<agency.numInfluencers;i++){
-    Influencer (*inf);
+for(unsigned int i=0;i<static_cast<unsigned int>(agency.numInfluencers);i++){
+     BinInfluencer inf;
 
     fihcerobinLec.read((char*)&inf,sizeof(BinInfluencer));
-    
-    influencers.push_back(*inf);
+    Influencer newinf(inf);
+    influencers.push_back(newinf);
 
-    unsigned int infTAM=(unsigned int)inf->getFollowers().size();
+    unsigned int infTAM=static_cast<unsigned int>(newinf.getFollowers().size());
     
-    for(unsigned int j=0;j<infTAM;j++){
-        SNFollowers (*fol);
-        influencers[i].addFollowers(*fol);
+    for(unsigned int j=0;j<static_cast<unsigned int>(infTAM);j++){
         fihcerobinLec.read((char*)&fol,sizeof(BinSNFollowers));
-        influencers[i].getFollowers().push_back(*fol);
+        SNFollowers newfol(fol);
+
+        influencers[i].addFollowers(newfol);
+        newinf.addFollowers(newfol);
+        influencers[i].getFollowers().push_back(newfol);
  }
 }
 fihcerobinLec.close();
@@ -71,10 +74,10 @@ void Agency::saveData(string filename) const{
 
     BinAgency ba=toBinAgency();
     file.write((char*)&ba,sizeof(BinAgency));
-    for(int i=0;i<influencers.size();i++){
+    for(unsigned int i=0;i<static_cast<unsigned int>(influencers.size());i++){
         BinInfluencer bi=influencers[i].toBinInfluencer();
         file.write((char*)&bi,sizeof(BinInfluencer));
-        for(int j=0;j<influencers[i].getFollowers().size();j++){
+        for(unsigned int j=0;j<static_cast<unsigned int>(influencers[i].getFollowers().size());j++){
             BinSNFollowers bsf=influencers[i].getFollowers()[j].toBinSNFollowers();
             file.write((char*)&bsf,sizeof(BinSNFollowers));
         }
