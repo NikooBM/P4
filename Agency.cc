@@ -19,10 +19,7 @@ if(!fihcerobinLec.is_open()){
     Util::error(ERR_FILE);
     throw EXCEPTION_FILE;
 }
-
 BinAgency agency;
-
-BinSNFollowers fol;
 fihcerobinLec.read((char*)&agency,sizeof(BinAgency));
 
 this->name=agency.name;
@@ -38,13 +35,12 @@ for(unsigned int i=0;i<static_cast<unsigned int>(agency.numInfluencers);i++){
     unsigned int infTAM=static_cast<unsigned int>(newinf.getFollowers().size());
     
     for(unsigned int j=0;j<static_cast<unsigned int>(infTAM);j++){
+        BinSNFollowers fol;
         fihcerobinLec.read((char*)&fol,sizeof(BinSNFollowers));
         SNFollowers newfol(fol);
 
-        influencers[i].addFollowers(newfol);
-        newinf.addFollowers(newfol);
-        influencers[i].getFollowers().push_back(newfol);
- }
+        influencers[influencers.size()-1].getFollowers().push_back(newfol);
+  }
 }
 fihcerobinLec.close();
 }
@@ -53,8 +49,8 @@ BinAgency Agency::toBinAgency() const{
     BinAgency ba;
 
     if(name.size()>KMAXNAME){
-        name.substr(0,KMAXNAME);
-        strcpy(ba.name,name.c_str());
+        string truncated_name= name.substr(0, KMAXNAME);
+        strcpy(ba.name,truncated_name.c_str());
     }
     else{
         strcpy(ba.name,name.c_str());

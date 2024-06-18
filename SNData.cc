@@ -90,8 +90,8 @@ for(unsigned int i=0;i<line.length();i++){
                         throw invalid_argument(line);
                     }
                         string avgM=line.substr(j+1,line.length());
-                        float avgRating=stof(avgR);
-                        float avgMonetizing=stof(avgM);
+                        float avgRating=stod(avgR);
+                        float avgMonetizing=stod(avgM);
 
                         SNData::newSocialNetwork(name,avgRating,avgMonetizing);
                         return;

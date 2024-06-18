@@ -21,8 +21,8 @@ BinSNFollowers SNFollowers:: toBinSNFollowers() const{
     BinSNFollowers newFollower;
 
     if(name.size()>KMAXNAME){
-        name.substr(0,KMAXNAME);
-        strcpy(newFollower.name,name.c_str());
+        string truncated_name=name.substr(0,KMAXNAME);
+        strcpy(newFollower.name,truncated_name.c_str());
     }
     else{
         strcpy(newFollower.name,name.c_str());
