@@ -13,14 +13,14 @@
 using namespace std;
 
 Agency::Agency(string filename){
-ifstream fihcerobinLec;
-fihcerobinLec.open(filename,ios::in|ios::binary);
-if(!fihcerobinLec.is_open()){
+ifstream fihceroBinLec;
+fihceroBinLec.open(filename,ios::in|ios::binary);
+if(!fihceroBinLec.is_open()){
     Util::error(ERR_FILE);
     throw EXCEPTION_FILE;
 }
 BinAgency agency;
-fihcerobinLec.read((char*)&agency,sizeof(BinAgency));
+fihceroBinLec.read((char*)&agency,sizeof(BinAgency));
 
 this->name=agency.name;
 this->money=agency.money;
@@ -28,7 +28,7 @@ this->money=agency.money;
 for(unsigned int i=0;i<static_cast<unsigned int>(agency.numInfluencers);i++){
      BinInfluencer inf;
 
-    fihcerobinLec.read((char*)&inf,sizeof(BinInfluencer));
+    fihceroBinLec.read((char*)&inf,sizeof(BinInfluencer));
     Influencer newinf(inf);
     influencers.push_back(newinf);
 
@@ -36,13 +36,13 @@ for(unsigned int i=0;i<static_cast<unsigned int>(agency.numInfluencers);i++){
     
     for(unsigned int j=0;j<static_cast<unsigned int>(infTAM);j++){
         BinSNFollowers fol;
-        fihcerobinLec.read((char*)&fol,sizeof(BinSNFollowers));
+        fihceroBinLec.read((char*)&fol,sizeof(BinSNFollowers));
         SNFollowers newfol(fol);
 
-        influencers[influencers.size()-1].getFollowers().push_back(newfol);
+        influencers.back().getFollowers().push_back(newfol);
   }
 }
-fihcerobinLec.close();
+fihceroBinLec.close();
 }
 
 BinAgency Agency::toBinAgency() const{
