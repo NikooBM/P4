@@ -26,8 +26,8 @@ BinInfluencer Influencer::toBinInfluencer() const{
     BinInfluencer newInfluencer;
 
     if(name.size()>KMAXNAME){
-        name.substr(0,KMAXNAME);
-        strcpy(newInfluencer.name,name.c_str());
+        string truncated_name=name.substr(0,KMAXNAME);
+        strcpy(newInfluencer.name,truncated_name.c_str());
     }
     else{
         strcpy(newInfluencer.name,name.c_str());
@@ -54,19 +54,23 @@ void Influencer::setCommission(double commission){
 
 void Influencer::addFollowers(string snName,int nFollowers){
     bool found =false;
+    int pos=0;
     try{
         SNFollowers sn(snName, nFollowers);
         for(unsigned int i=0;i<followers.size();i++){
             found=false;
             string nombre=followers[i].getName();
             if(nombre==snName){
-                followers[i].addFollowers(nFollowers);
+                pos=i;
                 found = true;
                 return;
             }
         }
         if(!found){
             followers.push_back(sn);
+        }
+        else{
+            followers[pos].addFollowers(nFollowers);
         }
     }
     catch(Exception e){
@@ -98,7 +102,7 @@ double Influencer::collectCommission(){
     double totalCommission = 0;
     
     for (unsigned int i=0; i<followers.size();++i){
-        if(followers[i].getMoney()>0){
+        if(followers[i].getMoney()>0 && SNData::checkSN(followers[i].getName())){
             totalCommission += followers[i].collectCommission(commission);
         }
     }

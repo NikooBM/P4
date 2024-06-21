@@ -69,20 +69,18 @@ void SNFollowers::addEvent(double rating){
     double ratingRelation=rating/avgRat;
     
     if(ratingRelation>0.8){
-
         int addedFollowers=static_cast<int>(numFollowers*ratingRelation);
         numFollowers += addedFollowers;
         
         double monetizing= (SNData::getAvgMonetizing(name));
         money+=addedFollowers*monetizing;
-    
     }
     
     if(ratingRelation<0.8){
         int lostFollowers=static_cast<int>((0.9-ratingRelation)*numFollowers);
             
         if(numFollowers>=lostFollowers){
-            numFollowers=numFollowers-lostFollowers;
+            numFollowers-=lostFollowers;
         }
         else{
             numFollowers=0;
