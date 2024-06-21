@@ -18,15 +18,17 @@ fihceroBinLec.open(filename,ios::in|ios::binary);
 if(!fihceroBinLec.is_open()){
     Util::error(ERR_FILE);
     throw EXCEPTION_FILE;
+
+    return;
 }
-BinAgency agency;
+BinAgency agency={};
 fihceroBinLec.read((char*)&agency,sizeof(BinAgency));
 
 this->name=agency.name;
 this->money=agency.money;
 
 for(unsigned int i=0;i<static_cast<unsigned int>(agency.numInfluencers);i++){
-     BinInfluencer inf;
+     BinInfluencer inf={};
 
     fihceroBinLec.read((char*)&inf,sizeof(BinInfluencer));
     Influencer newinf(inf);
@@ -39,18 +41,19 @@ for(unsigned int i=0;i<static_cast<unsigned int>(agency.numInfluencers);i++){
         fihceroBinLec.read((char*)&fol,sizeof(BinSNFollowers));
         SNFollowers newfol(fol);
 
-        influencers.back().getFollowers().push_back(newfol);
+        influencers.back().addFollowers(newfol);
   }
 }
 fihceroBinLec.close();
 }
 
 BinAgency Agency::toBinAgency() const{
-    BinAgency ba;
+    BinAgency ba={};
 
     if(name.size()>KMAXNAME){
         string truncated_name= name.substr(0, KMAXNAME);
         strcpy(ba.name,truncated_name.c_str());
+        ba.name[KMAXNAME - 1] = '\0';
     }
     else{
         strcpy(ba.name,name.c_str());

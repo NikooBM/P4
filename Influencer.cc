@@ -14,7 +14,7 @@ using namespace std;
 Influencer::Influencer(const BinInfluencer &bI){
     this->name=bI.name;
     this->commission=bI.commission;
-    this->followers.erase(followers.begin(),followers.end());
+    //this->followers.erase(followers.begin(),followers.end());
 }
 
 void Influencer::addFollowers(const SNFollowers &follower){
@@ -23,11 +23,12 @@ void Influencer::addFollowers(const SNFollowers &follower){
 }
 
 BinInfluencer Influencer::toBinInfluencer() const{
-    BinInfluencer newInfluencer;
+    BinInfluencer newInfluencer={};
 
     if(name.size()>KMAXNAME){
         string truncated_name=name.substr(0,KMAXNAME);
         strcpy(newInfluencer.name,truncated_name.c_str());
+        newInfluencer.name[KMAXNAME - 1] = '\0';
     }
     else{
         strcpy(newInfluencer.name,name.c_str());
@@ -63,7 +64,7 @@ void Influencer::addFollowers(string snName,int nFollowers){
             if(nombre==snName){
                 pos=i;
                 found = true;
-                return;
+                break;
             }
         }
         if(!found){
