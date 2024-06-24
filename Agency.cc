@@ -13,54 +13,53 @@
 using namespace std;
 
 Agency::Agency(string filename){
-ifstream fihceroBinLec;
-fihceroBinLec.open(filename,ios::in|ios::binary);
-if(!fihceroBinLec.is_open()){
+ifstream ficheroBinLec;
+ficheroBinLec.open(filename,ios::in|ios::binary);
+if(!ficheroBinLec.is_open()){
     Util::error(ERR_FILE);
     throw EXCEPTION_FILE;
-
     return;
 }
+//Lee agency
 BinAgency agency={};
-fihceroBinLec.read((char*)&agency,sizeof(BinAgency));
+ficheroBinLec.read(reinterpret_cast<char*>(&agency), sizeof(BinAgency));
+this->name = agency.name;
+this->money = agency.money;
 
-this->name=agency.name;
-this->money=agency.money;
+ // Lee los influencers
+for (unsigned int i = 0; i < static_cast<unsigned int>(agency.numInfluencers); ++i) {
+    BinInfluencer inf = {};
+    ficheroBinLec.read(reinterpret_cast<char*>(&inf), sizeof(BinInfluencer));
+    Influencer newInf(inf);
+    influencers.push_back(newInf);
 
-for(unsigned int i=0;i<static_cast<unsigned int>(agency.numInfluencers);i++){
-     BinInfluencer inf={};
-
-    fihceroBinLec.read((char*)&inf,sizeof(BinInfluencer));
-    Influencer newinf(inf);
-    influencers.push_back(newinf);
-
-    unsigned int infTAM=static_cast<unsigned int>(newinf.getFollowers().size());
-    
-    for(unsigned int j=0;j<static_cast<unsigned int>(infTAM);j++){
-        BinSNFollowers fol;
-        fihceroBinLec.read((char*)&fol,sizeof(BinSNFollowers));
-        SNFollowers newfol(fol);
-
-        influencers.back().addFollowers(newfol);
-  }
-}
-fihceroBinLec.close();
+     // Lee los seguidores de cada influencer
+    for (unsigned int j = 0; j < static_cast<unsigned int>(newInf.getFollowers().size()); ++j) {
+        BinSNFollowers fol = {};
+        ficheroBinLec.read(reinterpret_cast<char*>(&fol), sizeof(BinSNFollowers));
+        SNFollowers newFol(fol);
+        influencers.back().addFollowers(newFol);
+        }
+    }
+ficheroBinLec.close();
 }
 
 BinAgency Agency::toBinAgency() const{
     BinAgency ba={};
 
-    if(name.size()>KMAXNAME){
+    /*if(name.size()>KMAXNAME){
         string truncated_name= name.substr(0, KMAXNAME);
         strcpy(ba.name,truncated_name.c_str());
         ba.name[KMAXNAME - 1] = '\0';
     }
     else{
         strcpy(ba.name,name.c_str());
-    }
+    }*/
+    strncpy(ba.name, name.c_str(), KMAXNAME - 1);
+    ba.name[KMAXNAME - 1] = '\0'; 
 
     ba.money=money;
-    ba.numInfluencers=(int)influencers.size();
+    ba.numInfluencers=static_cast<int>(influencers.size());
     return ba;
 }
 

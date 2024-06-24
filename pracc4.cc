@@ -1,13 +1,12 @@
-
 #include "SNData.h"
 #include "Agency.h"
 
 
-int main()
-{
+int main() {
    SNData::readFromCSV("socialNetworks.csv");
    SNData::newSocialNetwork("Encolerizamos", 0.2, 0.4);
    SNData::newSocialNetwork("Los pufos amos", 0.1, 0.3);
+   
    Agency pufosAmos("Los pufos amos",1000.0);
    
    pufosAmos.addInfluencer("Pijus Magnificus",0.25);

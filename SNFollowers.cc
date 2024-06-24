@@ -20,14 +20,8 @@ SNFollowers::SNFollowers(const BinSNFollowers &bSNF){
 BinSNFollowers SNFollowers:: toBinSNFollowers() const{
     BinSNFollowers newFollower={};
 
-    if(name.size()>KMAXNAME){
-        string truncated_name=name.substr(0,KMAXNAME);
-        strcpy(newFollower.name,truncated_name.c_str());
-        newFollower.name[KMAXNAME - 1] = '\0';
-    }
-    else{
-        strcpy(newFollower.name,name.c_str());
-    }
+    strncpy(newFollower.name, name.c_str(), KMAXNAME - 1);
+    newFollower.name[KMAXNAME - 1] = '\0'; 
 
     newFollower.numFollowers=numFollowers;
     newFollower.money=money;

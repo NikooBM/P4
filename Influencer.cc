@@ -25,17 +25,12 @@ void Influencer::addFollowers(const SNFollowers &follower){
 BinInfluencer Influencer::toBinInfluencer() const{
     BinInfluencer newInfluencer={};
 
-    if(name.size()>KMAXNAME){
-        string truncated_name=name.substr(0,KMAXNAME);
-        strcpy(newInfluencer.name,truncated_name.c_str());
-        newInfluencer.name[KMAXNAME - 1] = '\0';
-    }
-    else{
-        strcpy(newInfluencer.name,name.c_str());
-    }
-    newInfluencer.commission=commission;
-    newInfluencer.numFollowers=(int)followers.size();
+    strncpy(newInfluencer.name, name.c_str(), KMAXNAME - 1);
+    newInfluencer.name[KMAXNAME - 1] = '\0'; 
 
+    newInfluencer.commission=commission;
+    newInfluencer.numFollowers=static_cast<int>(followers.size());
+    
     return newInfluencer;
 }
 
@@ -113,7 +108,7 @@ double Influencer::collectCommission(){
 ostream& operator<<(ostream &os,const Influencer &inf){
     os << "Influencer: " << inf.getName() << " (" << inf.getCommission() << ")" << endl;
     for (unsigned int i = 0; i < inf.getFollowers().size(); ++i) {
-        os << inf.getFollowers()[i];
+        os << "[" << inf.followers[i].getName() << "|" << inf.followers[i].getMoney() << "|" << inf.followers[i].getNumFollowers() << "]";
         os << endl;
     }
     return os;

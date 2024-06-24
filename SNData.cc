@@ -32,6 +32,9 @@ void SNData::newSocialNetwork(string name,double avgR,double avgM){
         newsns.averageMonetizing=avgM;
        
         sns.push_back(newsns);
+
+        //Hay que quitarlo despues
+        cout<<newsns.name<<newsns.averageRating<<newsns.averageMonetizing<<endl;
     }
 }
 
@@ -69,45 +72,49 @@ void SNData::newSocialNetwork(string name,double avgR,double avgM){
  */
 
 void readline(string line){
-
-    if(line.length()==0){
+     if (line.length() == 0) {
         return;
     }
 
-    else if(line[0]==':'){
+    if (line[0] == ':') {
         throw invalid_argument(line);
     }
 
-    else{
-for(unsigned int i=0;i<line.length();i++){
-    if(line[i]==':'){
-        string name=line.substr(0,i);
-        for(unsigned int j=i+1;j<line.length();j++){
-            if(line[j]==':'){
-                string avgR=line.substr(i+1,j-i);
-                for(unsigned int k=j+1;k<line.length();k++){
-                    if(line[k]==':'){
-                        throw invalid_argument(line);
-                    }
-                        string avgM=line.substr(j+1,line.length());
-                        float avgRating=stod(avgR);
-                        float avgMonetizing=stod(avgM);
+    size_t primer_punto = line.find(':');
+    if (primer_punto == string::npos) {
+        throw invalid_argument(line);
+    }
+    string name = line.substr(0, primer_punto);
 
-                        SNData::newSocialNetwork(name,avgRating,avgMonetizing);
-                        return;
-                }
-            }
-        }
+    size_t segundo_punto = line.find(':', primer_punto + 1);
+    if (segundo_punto == string::npos || primer_punto + 1 == segundo_punto) {
+        throw invalid_argument(line);
+    }
+    string avgR = line.substr(primer_punto + 1, segundo_punto - primer_punto - 1);
+
+    if (avgR.find(':') != string::npos || segundo_punto == line.length()) {
+        throw invalid_argument(line);
+    }
+    double avgRating = stod(avgR);
+
+    string avgM = line.substr(segundo_punto + 1);
+    if (avgM.find(':') != string::npos) {
+        throw invalid_argument(line);
+    }
+    double avgMonetizing = stod(avgM);
+
+    try {
+        SNData::newSocialNetwork(name, avgRating, avgMonetizing);
+    } catch (invalid_argument &e) {
+        throw invalid_argument(line);
     }
 }
-throw invalid_argument(line);
-    }
-}
+
 
 void SNData::readFromCSV(string filename){
     int linenum=0;
-    ifstream ficheroLec;
-    ficheroLec.open(filename);
+    ifstream ficheroLec(filename);
+
     if(ficheroLec.is_open()){
         string line;
         while(getline(ficheroLec,line)){
